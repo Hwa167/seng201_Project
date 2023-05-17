@@ -1,6 +1,7 @@
 package com.dd.playgame.gui;
 
-import com.dd.playgame.application.GameInfo;
+import com.dd.playgame.application.GameController;
+import com.dd.playgame.bean.GameInfo;
 import com.dd.playgame.application.PlayerGameData;
 import com.dd.playgame.bean.MarketConsumable;
 import com.dd.playgame.bean.MarketPlayer;
@@ -46,7 +47,7 @@ public class BuysScreen extends JPanel {
         shopList.addListSelectionListener(e -> {
             int index = shopList.getSelectedIndex();
             if (index != -1) {
-                Object item = gameInfo.market.getGoods().get(index);
+                Object item = gameInfo.market.getAllGoods().get(index);
                 if (item instanceof MarketPlayer) {
                     MarketPlayer marketPlayer = (MarketPlayer) item;
                     lblIntroduce.setText(marketPlayer.description);
@@ -87,20 +88,25 @@ public class BuysScreen extends JPanel {
         btnBack.addActionListener(e -> GameController.switchPanel(new ShopsScreen()));
         add(btnBack);
 
-        JLabel lblTodayItem = new JLabel("Select Items");
-        lblTodayItem.setFont(new Font("Times New Roman", Font.BOLD, 25));
-        lblTodayItem.setBounds(310, 10, 230, 55);
-        add(lblTodayItem);
+        JLabel lblSelectItem = new JLabel("Select Items");
+        lblSelectItem.setFont(new Font("Times New Roman", Font.BOLD, 25));
+        lblSelectItem.setBounds(310, 10, 230, 55);
+        add(lblSelectItem);
 
     }
 
+    /**
+     * Trigger the purchase of goods operation
+     *
+     * @param button
+     */
     private void buy(JButton button) {
         int index = shopList.getSelectedIndex();
         if (index == -1) {
             new MessageFrame("Error", "Please choose shop!", false, button);
             return;
         }
-        Object buyItem = gameInfo.market.getGoods().get(index);
+        Object buyItem = gameInfo.market.getAllGoods().get(index);
         if (buyItem instanceof MarketPlayer) {
             new ChoseJoinFrame(this, (MarketPlayer) buyItem);
         } else if (buyItem instanceof MarketConsumable) {
@@ -109,6 +115,9 @@ public class BuysScreen extends JPanel {
         }
     }
 
+    /**
+     * Refresh the data displayed on the panel
+     */
     public void refreshData() {
         lblBalance.setText("Balance   -   " + gameInfo.team.getAmountStr());
         shopList.setListData(gameInfo.market.getGoodsInfo().toArray());

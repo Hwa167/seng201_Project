@@ -1,5 +1,7 @@
 package com.dd.playgame.gui;
 
+import com.dd.playgame.application.GameController;
+
 import javax.swing.*;
 
 
@@ -49,6 +51,15 @@ public class MainScreen extends JPanel {
 		btnQuit.setBackground(Color.WHITE);
 		btnQuit.setBounds(598, 411, 216, 52);
 		add(btnQuit);
+		
+		JLabel lblNewLabel_1 = new JLabel("Sports Tournament");
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD | Font.ITALIC, 40));
+		lblNewLabel_1.setBounds(34, 216, 449, 148);
+		add(lblNewLabel_1);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon(MainScreen.class.getResource("/Image/kung-fu.png")));
+		lblNewLabel.setBounds(10, 10, 860, 492);
+		add(lblNewLabel);
 	}
-
 }

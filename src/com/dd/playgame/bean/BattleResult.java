@@ -1,11 +1,13 @@
 package com.dd.playgame.bean;
 
-import com.dd.playgame.application.Difficulty;
+import com.dd.playgame.util.RandomUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Match result data, calculate the bonus and points to be distributed based on scores and game difficulty
+ */
 public class BattleResult {
 
     private double team1Score;
@@ -29,7 +31,7 @@ public class BattleResult {
         BigDecimal bigDecimal2 = BigDecimal.valueOf(team2Score);
 
         this.isTeam1Win = bigDecimal1.compareTo(bigDecimal2) == 0
-                ? ThreadLocalRandom.current().nextBoolean()
+                ? RandomUtils.getRandomBoolean()
                 : team1Score > team2Score;
 
         double scoreDiff = Math.abs(team1Score - team2Score);

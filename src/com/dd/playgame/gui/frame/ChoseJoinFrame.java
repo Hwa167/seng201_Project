@@ -1,6 +1,5 @@
 package com.dd.playgame.gui.frame;
 
-import com.dd.playgame.application.GameInfo;
 import com.dd.playgame.application.PlayerGameData;
 import com.dd.playgame.bean.MarketPlayer;
 import com.dd.playgame.gui.BuysScreen;
@@ -13,6 +12,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * Choose the unit you want to join
+ */
 public class ChoseJoinFrame {
 
     private JFrame frmSss;
@@ -60,7 +62,7 @@ public class ChoseJoinFrame {
         frmSss.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frmSss.getContentPane().setLayout(null);
 
-        JLabel lblNewLabel = new JLabel("Please name your player (Enter directly as the default name):");
+        JLabel lblNewLabel = new JLabel("Your player name (Enter directly as the default name):");
         lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 15));
         lblNewLabel.setBounds(28, 5, 384, 45);
         frmSss.getContentPane().add(lblNewLabel);
@@ -83,7 +85,7 @@ public class ChoseJoinFrame {
         });
         JRadioButton radioButton2 = new JRadioButton("in reserves");
         radioButton2.setFont(new Font("Dialog", Font.PLAIN, 15));
-        radioButton2.setBounds(145, 105, 120, 50);
+        radioButton2.setBounds(169, 105, 120, 50);
         radioButton2.addActionListener(e -> {
             this.choseUnit = 2;
         });
@@ -117,15 +119,21 @@ public class ChoseJoinFrame {
         frmSss.getContentPane().add(btnCancel);
     }
 
-    private boolean checkName(JButton jb) {
+    /**
+     * Check if the entered name matches the rules
+     *
+     * @param button button
+     * @return
+     */
+    private boolean checkName(JButton button) {
         String playerName = textField.getText();
         if (playerName.length() != 0) {
             if (playerName.length() < 3 || playerName.length() > 15) {
-                new MessageFrame("Error", "Player name must be between 3 and 15 characters!", false, jb);
+                new MessageFrame("Error", "Player name must be between 3 and 15 characters!", false, button);
                 return false;
             }
             if (!playerName.matches("[a-zA-Z ]+")) {
-                new MessageFrame("Error", "Name can only include letters!", false, jb);
+                new MessageFrame("Error", "Name can only include letters!", false, button);
                 return false;
             }
         }

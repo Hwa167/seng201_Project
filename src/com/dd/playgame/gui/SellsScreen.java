@@ -1,6 +1,7 @@
 package com.dd.playgame.gui;
 
-import com.dd.playgame.application.GameInfo;
+import com.dd.playgame.application.GameController;
+import com.dd.playgame.bean.GameInfo;
 import com.dd.playgame.application.PlayerGameData;
 import com.dd.playgame.bean.Consumable;
 import com.dd.playgame.bean.MarketConsumable;
@@ -72,6 +73,11 @@ public class SellsScreen extends JPanel {
         loadData();
     }
 
+    /**
+     * Sell products based on the entered product number
+     *
+     * @param button
+     */
     private void sell(JButton button) {
         int num;
         try {
@@ -96,10 +102,16 @@ public class SellsScreen extends JPanel {
         }
     }
 
+    /**
+     * Load data after creating a panel
+     */
     private void loadData() {
         refreshData();
     }
 
+    /**
+     * Refresh the data displayed on the panel
+     */
     private void refreshData() {
         lblBalance.setText("Balance   -   " + gameInfo.team.getAmountStr());
 

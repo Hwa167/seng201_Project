@@ -1,5 +1,7 @@
 package com.dd.playgame.gui;
 
+import com.dd.playgame.application.GameController;
+
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -21,7 +23,7 @@ public class ShopsScreen extends JPanel {
         JButton btnNewButton = new JButton("Buy Item");
         btnNewButton.setFont(new Font("Times New Roman", Font.PLAIN, 25));
         btnNewButton.setBounds(118, 210, 216, 84);
-        btnNewButton.addActionListener(e->GameController.switchPanel(new BuysScreen()));
+        btnNewButton.addActionListener(e-> GameController.switchPanel(new BuysScreen()));
         add(btnNewButton);
 
         JButton btnSellItem = new JButton("Sell Item\r\n");

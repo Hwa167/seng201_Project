@@ -1,7 +1,7 @@
 package com.dd.playgame.gui;
 
-import com.dd.playgame.application.Difficulty;
-import com.dd.playgame.application.GameInfo;
+import com.dd.playgame.application.GameController;
+import com.dd.playgame.bean.Difficulty;
 import com.dd.playgame.application.PlayerGameData;
 
 import javax.swing.*;
@@ -26,22 +26,22 @@ public class SecondScreen extends JPanel {
 
         JLabel Data = new JLabel("Select Data\r\n");
         Data.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        Data.setBounds(23, 10, 103, 58);
+        Data.setBounds(24, 39, 103, 58);
         add(Data);
 
         JLabel Name = new JLabel("Your Team Name: \r\n");
         Name.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        Name.setBounds(23, 78, 174, 45);
+        Name.setBounds(23, 134, 174, 45);
         add(Name);
 
         teamNameField = new JTextField();
         teamNameField.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        teamNameField.setBounds(195, 83, 184, 35);
+        teamNameField.setBounds(195, 139, 184, 35);
         add(teamNameField);
 
         JLabel Diff = new JLabel("Difficulty:\r\n\r\n");
         Diff.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        Diff.setBounds(23, 160, 174, 45);
+        Diff.setBounds(23, 223, 174, 45);
         add(Diff);
 
         JButton Easy = new JButton("EASY\r\n");
@@ -51,7 +51,7 @@ public class SecondScreen extends JPanel {
             }
         });
         Easy.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        Easy.setBounds(196, 160, 120, 36);
+        Easy.setBounds(196, 227, 120, 36);
         Easy.setFocusable(false);
         add(Easy);
         typeList.add(Easy);
@@ -63,7 +63,7 @@ public class SecondScreen extends JPanel {
             }
         });
         btnNormal.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        btnNormal.setBounds(363, 164, 120, 36);
+        btnNormal.setBounds(368, 227, 120, 36);
         btnNormal.setFocusable(false);
         add(btnNormal);
         typeList.add(btnNormal);
@@ -75,7 +75,7 @@ public class SecondScreen extends JPanel {
             }
         });
         btnHard.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        btnHard.setBounds(522, 164, 120, 36);
+        btnHard.setBounds(530, 227, 120, 36);
         btnHard.setFocusable(false);
         add(btnHard);
         typeList.add(btnHard);
@@ -83,7 +83,7 @@ public class SecondScreen extends JPanel {
 
         JLabel SelectDays = new JLabel("Select Weeks (5-15):");
         SelectDays.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        SelectDays.setBounds(23, 225, 174, 45);
+        SelectDays.setBounds(23, 309, 174, 45);
         add(SelectDays);
 
         //配置俱乐部初始运动员
@@ -107,12 +107,12 @@ public class SecondScreen extends JPanel {
             }
         });
         btnNext.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        btnNext.setBounds(698, 10, 139, 45);
+        btnNext.setBounds(615, 52, 139, 45);
         add(btnNext);
 
         JLabel lblNewLabel_1 = new JLabel("5");
         lblNewLabel_1.setFont(new Font("Times New Roman", Font.PLAIN, 30));
-        lblNewLabel_1.setBounds(674, 221, 58, 45);
+        lblNewLabel_1.setBounds(676, 309, 58, 45);
         add(lblNewLabel_1);
 
 
@@ -125,7 +125,7 @@ public class SecondScreen extends JPanel {
         slider.setValue(10);
         slider.setMinimum(5);
         slider.setMaximum(15);
-        slider.setBounds(207, 225, 454, 35);
+        slider.setBounds(211, 319, 454, 35);
         add(slider);
 
 
@@ -185,6 +185,7 @@ public class SecondScreen extends JPanel {
 //            }
 //        }
 
+        //Initialize game data based on user input information
         PlayerGameData.initConfig(difficulty, teamName, weeks);
         GameController.switchPanel(new PlaysScreen());
     }

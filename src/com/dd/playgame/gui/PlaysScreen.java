@@ -1,15 +1,13 @@
 package com.dd.playgame.gui;
 
 import com.dd.playgame.application.DataHandler;
-import com.dd.playgame.application.GameInfo;
+import com.dd.playgame.application.GameController;
+import com.dd.playgame.bean.GameInfo;
 import com.dd.playgame.application.PlayerGameData;
-import com.dd.playgame.application.PlayerRole;
-import com.dd.playgame.bean.Team;
 
 import javax.swing.*;
 import java.awt.Color;
 import java.awt.Font;
-import java.util.ArrayList;
 import java.util.Optional;
 
 public class PlaysScreen extends JPanel {
@@ -25,8 +23,9 @@ public class PlaysScreen extends JPanel {
 
         JButton btnNewButton = new JButton("Stadium");
         btnNewButton.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        btnNewButton.setBackground(Color.WHITE);
+        btnNewButton.setBackground(new Color(240, 240, 240));
         btnNewButton.setBounds(71, 207, 117, 42);
+        btnNewButton.addActionListener(e -> GameController.switchPanel(new StadiumScreen()));
         add(btnNewButton);
 
         JButton btnClub = new JButton("Club\r\n");
@@ -53,7 +52,7 @@ public class PlaysScreen extends JPanel {
         btnRest.setFont(new Font("Times New Roman", Font.PLAIN, 20));
         btnRest.setBounds(71, 105, 89, 42);
         btnRest.addActionListener(e -> {
-            if (PlayerGameData.getGameInfo().isLastWeek()) {
+            if (PlayerGameData.isLastWeek()) {
                 GameController.switchPanel(new GameOverScreen());
             } else {
                 PlayerGameData.nextWeek();
@@ -96,43 +95,48 @@ public class PlaysScreen extends JPanel {
         JButton btnShop_1 = new JButton("Store");
         btnShop_1.setFont(new Font("Times New Roman", Font.PLAIN, 20));
         btnShop_1.setBounds(384, 165, 89, 42);
+        btnShop_1.addActionListener(e -> GameController.switchPanel(new StoresScreen()));
         add(btnShop_1);
 
         JLabel lblNewLabel = new JLabel("");
-        lblNewLabel.setIcon(new ImageIcon(PlaysScreen.class.getResource("/Image/KK.jpg")));
+//        lblNewLabel.setIcon(new ImageIcon(PlaysScreen.class.getResource("/Image/KK.jpg")));
         lblNewLabel.setBounds(38, -46, 848, 572);
         add(lblNewLabel);
+        
+        JButton btnShop_1_1 = new JButton("Store");
+        btnShop_1_1.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        btnShop_1_1.setBounds(384, 165, 89, 42);
+        add(btnShop_1_1);
+        
+        JLabel lblNewLabel_1 = new JLabel("");
+        lblNewLabel_1.setIcon(new ImageIcon(PlaysScreen.class.getResource("/Image/KK.jpg")));
+        lblNewLabel_1.setBounds(10, 22, 800, 467);
+        add(lblNewLabel_1);
     }
 
+    /**
+     * Conduct a random match
+     *
+     * @param button
+     */
     private void toBattle(JButton button) {
-        GameInfo gameInfo = PlayerGameData.getGameInfo();
-        //检查队伍是否符合规则
-        ArrayList<String> absentRoles = new ArrayList<>();
-        for (PlayerRole role : PlayerRole.values()) {
-            boolean exists = gameInfo.team.players.stream().anyMatch(item -> item.role == role);
-            if (!exists) {
-                absentRoles.add(role.value);
-            }
+        if (PlayerGameData.canBattle(button)) {
+            GameController.switchPanel(new BattleScreen());
         }
-        if (!absentRoles.isEmpty()) {
-            new MessageFrame("Tips", "There is a shortage of athletes with roles "+
-                    absentRoles
-                    +" in the team, go to the market and take a look!", true, null);
-            return;
-        }
-
-        boolean checkEndurance = gameInfo.team.players.stream().filter(item -> item.endurance > 0).count() == 5;
-        if (!checkEndurance) {
-            new MessageFrame("Tips", "Some members of the team have insufficient endurance and cannot participate in the competition!", true, null);
-            return;
-        }
-        GameController.switchPanel(new BattleScreen());
     }
 
+    /**
+     * Refresh the data displayed on the panel
+     */
     private void refreshData() {
         lblWeek.setText(getTitle());
     }
 
+    /**
+     * Panel Display Title
+     *
+     * @return title content
+     */
     private String getTitle() {
         GameInfo gameInfo = PlayerGameData.getGameInfo();
         return "Week  -  " + gameInfo.cycle + " / " + gameInfo.allCycle + "   Team: " + gameInfo.team.name + "   Scores  -  " + gameInfo.team.integral;

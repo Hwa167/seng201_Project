@@ -1,6 +1,7 @@
 package com.dd.playgame.gui;
 
-import com.dd.playgame.application.GameInfo;
+import com.dd.playgame.application.GameController;
+import com.dd.playgame.bean.GameInfo;
 import com.dd.playgame.application.PlayerGameData;
 
 import javax.swing.*;
@@ -29,20 +30,20 @@ public class GameOverScreen extends JPanel {
     JLabel lblname = new JLabel("Team name: " + gameInfo.team.name);
     lblname.setHorizontalAlignment(SwingConstants.CENTER);
     lblname.setFont(new Font("Dialog", Font.PLAIN, 20));
-    lblname.setBounds(290, 190, 300, 30);
+    lblname.setBounds(290, 219, 300, 30);
     add(lblname);
 
     JLabel lblDifficulty = new JLabel("Difficulty: " + gameInfo.difficulty);
     lblDifficulty.setHorizontalAlignment(SwingConstants.CENTER);
     lblDifficulty.setFont(new Font("Dialog", Font.PLAIN, 20));
-    lblDifficulty.setBounds(290, 230, 300, 30);
+    lblDifficulty.setBounds(290, 259, 300, 30);
     add(lblDifficulty);
 
     JLabel lblship = new JLabel("Score: " + gameInfo.team.integral);
     lblship.setHorizontalAlignment(SwingConstants.CENTER);
     lblship.setFont(new Font("Dialog", Font.PLAIN, 20));
 
-    lblship.setBounds(290, 270, 300, 30);
+    lblship.setBounds(290, 299, 300, 30);
     add(lblship);
 
     JLabel lblday = new JLabel("Weeks   -   "
@@ -50,13 +51,13 @@ public class GameOverScreen extends JPanel {
 
     lblday.setHorizontalAlignment(SwingConstants.CENTER);
     lblday.setFont(new Font("Dialog", Font.PLAIN, 20));
-    lblday.setBounds(290, 310, 300, 30);
+    lblday.setBounds(290, 339, 300, 30);
     add(lblday);
 
     JLabel lblmoney = new JLabel("Balance: " + gameInfo.team.getAmountStr());
     lblmoney.setHorizontalAlignment(SwingConstants.CENTER);
     lblmoney.setFont(new Font("Dialog", Font.PLAIN, 20));
-    lblmoney.setBounds(290, 350, 300, 30);
+    lblmoney.setBounds(290, 379, 300, 30);
     add(lblmoney);
 
     JButton btnNewButton = new JButton("Quit");
@@ -66,7 +67,7 @@ public class GameOverScreen extends JPanel {
       }
     });
     btnNewButton.setFont(new Font("Dialog", Font.PLAIN, 20));
-    btnNewButton.setBounds(365, 400, 150, 40);
+    btnNewButton.setBounds(370, 433, 150, 40);
     add(btnNewButton);
 
     JLabel lblname2 = new JLabel(
@@ -79,5 +80,10 @@ public class GameOverScreen extends JPanel {
     JSeparator separator = new JSeparator();
     separator.setBounds(90, 205, 700, 2);
     add(separator);
+    
+    JLabel lblNewLabel = new JLabel("");
+    lblNewLabel.setIcon(new ImageIcon(GameOverScreen.class.getResource("/Image/Taiquandao.png")));
+    lblNewLabel.setBounds(10, 10, 888, 497);
+    add(lblNewLabel);
   }
 }

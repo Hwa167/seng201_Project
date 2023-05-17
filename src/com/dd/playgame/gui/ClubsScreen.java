@@ -1,9 +1,9 @@
 package com.dd.playgame.gui;
 
+import com.dd.playgame.application.GameController;
 import com.dd.playgame.application.PlayerGameData;
 import com.dd.playgame.bean.Player;
 import com.dd.playgame.bean.Team;
-import com.dd.playgame.gui.frame.ChoseConsumableFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,6 +44,14 @@ public class ClubsScreen extends JPanel {
             showPlayers.add(player.formatBasic());
         }
         activeList = new JList(showPlayers.toArray());
+        activeList.setCellRenderer(new DefaultListCellRenderer(){
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component itemComponent = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                itemComponent.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+                return itemComponent;
+            }
+        });
         jsp.setViewportView(activeList);
 
         JLabel lblReservePlayers = new JLabel("Reserve Players");
@@ -60,11 +68,19 @@ public class ClubsScreen extends JPanel {
             showReservePlayers.add(player.formatBasic());
         }
         reserveList = new JList(showReservePlayers.toArray());
+        reserveList.setCellRenderer(new DefaultListCellRenderer(){
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component itemComponent = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                itemComponent.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+                return itemComponent;
+            }
+        });
         jsp2.setViewportView(reserveList);
 
         JButton btnExchange = new JButton("Exchange");
         btnExchange.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        btnExchange.setBounds(70, 410, 118, 42);
+        btnExchange.setBounds(110, 410, 118, 42);
         btnExchange.addActionListener(e -> {
             exchange(btnExchange);
         });
@@ -72,7 +88,7 @@ public class ClubsScreen extends JPanel {
 
         JButton btnAddPlayer = new JButton("AddToActive");
         btnAddPlayer.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        btnAddPlayer.setBounds(195, 410, 135, 42);
+        btnAddPlayer.setBounds(263, 410, 135, 42);
         btnAddPlayer.addActionListener(e -> {
             addToActive(btnAddPlayer);
         });
@@ -80,23 +96,15 @@ public class ClubsScreen extends JPanel {
 
         JButton btnRemovePlayer = new JButton("MoveToReserve");
         btnRemovePlayer.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        btnRemovePlayer.setBounds(340, 410, 160, 42);
+        btnRemovePlayer.setBounds(433, 410, 160, 42);
         btnRemovePlayer.addActionListener(e -> {
             moveToReserve(btnRemovePlayer);
         });
         add(btnRemovePlayer);
 
-        JButton btnConsumable = new JButton("Consumable");
-        btnConsumable.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        btnConsumable.setBounds(510, 410, 160, 42);
-        btnConsumable.addActionListener(e -> {
-            applyConsumable(btnConsumable);
-        });
-        add(btnConsumable);
-
         JButton btnBack = new JButton("Back\r\n");
         btnBack.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        btnBack.setBounds(680, 410, 105, 42);
+        btnBack.setBounds(628, 410, 105, 42);
         btnBack.addActionListener(e -> GameController.switchPanel(new PlaysScreen()));
         add(btnBack);
 
@@ -106,22 +114,10 @@ public class ClubsScreen extends JPanel {
         add(lblBalance);
     }
 
-    private void applyConsumable(JButton button) {
-        int activeIndex = activeList.getSelectedIndex();
-        int reserveIndex = reserveList.getSelectedIndex();
-        if (activeIndex != -1 || reserveIndex != -1) {
-            final Player player;
-            if (activeIndex != -1) {
-                player = team.players.get(activeIndex);
-            } else {
-                player = team.reserves.get(reserveIndex);
-            }
-            new ChoseConsumableFrame(this, player);
-        } else {
-            new MessageFrame("Error", "Please select the athlete!", false, button);
-        }
-    }
-
+    /**
+     * Choose a active player to reserve player
+     * @param button
+     */
     private void moveToReserve(JButton button) {
         int activeIndex = activeList.getSelectedIndex();
         if (activeIndex != -1) {
@@ -134,6 +130,10 @@ public class ClubsScreen extends JPanel {
         }
     }
 
+    /**
+     * Choose a reserve player to active player
+     * @param button
+     */
     private void addToActive(JButton button) {
         int reserveIndex = reserveList.getSelectedIndex();
         if (reserveIndex != -1) {
@@ -155,6 +155,11 @@ public class ClubsScreen extends JPanel {
         }
     }
 
+    /**
+     * exchange active player and reserve player
+     *
+     * @param button
+     */
     private void exchange(JButton button) {
         int activeIndex = activeList.getSelectedIndex();
         int reserveIndex = reserveList.getSelectedIndex();
@@ -179,6 +184,9 @@ public class ClubsScreen extends JPanel {
         }
     }
 
+    /**
+     * Refresh the data displayed on the panel
+     */
     public void refreshData() {
         List<String> showPlayers = new ArrayList<>();
         for (Player player : team.players) {

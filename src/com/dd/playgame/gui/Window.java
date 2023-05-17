@@ -64,9 +64,9 @@ public class Window {
     jframe.setResizable(false);
     jframe.setTitle("Taekwondo competition");
 
-    Dimension windowscreen = Toolkit.getDefaultToolkit().getScreenSize();
-    jframe.setBounds((int)(windowscreen.getWidth() - 880) / 2,
-        (int)(windowscreen.getHeight() - 550) / 2, 880, 495);
+    Dimension windowScreen = Toolkit.getDefaultToolkit().getScreenSize();
+    jframe.setBounds((int)(windowScreen.getWidth() - 880) / 2,
+        (int)(windowScreen.getHeight() - 550) / 2, 880, 495);
     jframe.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     jframe.getContentPane().setLayout(new BoxLayout(jframe.getContentPane(), BoxLayout.Y_AXIS));
   }

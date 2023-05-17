@@ -1,17 +1,16 @@
 package com.dd.playgame.gui;
 
-import com.dd.playgame.application.ConsumableType;
-import com.dd.playgame.application.GameInfo;
-import com.dd.playgame.application.MarketGenerator;
+import com.dd.playgame.application.GameController;
 import com.dd.playgame.application.PlayerGameData;
-import com.dd.playgame.bean.MarketConsumable;
-import com.dd.playgame.bean.Player;
+import com.dd.playgame.bean.*;
+import com.dd.playgame.generator.ConsumableGenerator;
+import com.dd.playgame.generator.RandomEventGenerator;
+import com.dd.playgame.util.RandomUtils;
 
 import javax.swing.*;
-import java.awt.Font;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomsScreen extends JPanel {
 
@@ -28,21 +27,24 @@ public class RandomsScreen extends JPanel {
 
         StringBuilder stringBuilder = new StringBuilder();
         GameInfo gameInfo = PlayerGameData.getGameInfo();
+        final int difficultyNum = gameInfo.difficulty.getNum();
 
-        if (gameInfo.generatorHighPlayer) {
+        //Are there any high athletes on the market this week?
+        if (gameInfo.market.isHaveHighPlayer()) {
             stringBuilder.append("Congratulations, the market has produced more advanced athletes!\n");
         }
 
+        //Has any athlete's ability been improved this week?
         List<Integer> playerNums = new ArrayList<>();
         for (Player player : gameInfo.team.players) {
-            if (gameInfo.capacityUp()) {
+            if (RandomEventGenerator.playerIncreaseProb(difficultyNum)) {
                 playerNums.add(player.num);
-                boolean next = ThreadLocalRandom.current().nextBoolean();
-                MarketConsumable freeConsumable = MarketGenerator.generateFreeConsumable(gameInfo,
+                boolean next = RandomUtils.getRandomBoolean();
+                Consumable freeConsumable = ConsumableGenerator.generateFreeConsumable(gameInfo,
                         next ? ConsumableType.STRENGTH : ConsumableType.DEFENSE);
                 if (next) {
                     player.addStrength(freeConsumable.effect);
-                }else {
+                } else {
                     player.addDefense(freeConsumable.effect);
                 }
                 stringBuilder.append("During the team repair period, ")
@@ -53,9 +55,10 @@ public class RandomsScreen extends JPanel {
             }
         }
 
+        //Has any athlete given up participating in the competition this week?
         List<Player> abandonPlayers = new ArrayList<>();
         for (Player player : gameInfo.team.players) {
-            if (gameInfo.gaveUp() && !playerNums.contains(player.num)) {
+            if (RandomEventGenerator.playerAbandonProb(difficultyNum) && !playerNums.contains(player.num)) {
                 player.declineEndurance(100d);
                 stringBuilder.append("During the team renovation period, ")
                         .append(player.name)
@@ -68,6 +71,8 @@ public class RandomsScreen extends JPanel {
         gameInfo.team.reserves.addAll(abandonPlayers);
 
         String result = stringBuilder.toString();
+
+        //No random events have occurred this week
         if (result.isEmpty()) {
             JLabel lblNewLabel = new JLabel("Nothing happened!");
             lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);

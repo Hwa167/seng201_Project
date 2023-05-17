@@ -1,9 +1,14 @@
 package com.dd.playgame.gui;
 
-import com.dd.playgame.application.*;
+import com.dd.playgame.application.GameController;
+import com.dd.playgame.application.PlayerGameData;
 import com.dd.playgame.bean.BattleResult;
 import com.dd.playgame.bean.Player;
+import com.dd.playgame.bean.PlayerRole;
 import com.dd.playgame.bean.Team;
+import com.dd.playgame.util.BattlePromptUtils;
+import com.dd.playgame.util.RandomUtils;
+import com.dd.playgame.generator.TeamGenerator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +18,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class BattleScreen extends JPanel {
 
@@ -24,7 +28,7 @@ public class BattleScreen extends JPanel {
     private final JLabel lblTitle;
     private final JButton btnInventory;
 
-    private JTextArea textArea;
+    private JTextArea BattleRecordText;
     private JLabel lblMt;
     private JLabel lblOt;
 
@@ -40,16 +44,23 @@ public class BattleScreen extends JPanel {
 
     private List<Double[]> scores;
 
+    private boolean isMatch = false;
+
     /**
      * Create the panel.
      */
     public BattleScreen() {
-        this.systemTeam = TeamGenerator.generateTeam(PlayerGameData.getGameInfo());
+        this(TeamGenerator.generateTeam(PlayerGameData.getGameInfo()));
+        this.isMatch = true;
+    }
+
+    public BattleScreen(Team systemTeam) {
+        this.systemTeam = systemTeam;
         this.userTeam = PlayerGameData.getGameInfo().team;
         this.index = 1;
-        this.battleRoles = new ArrayList<>();
-        this.battleRoles.addAll(Arrays.asList(PlayerRole.values()));
+        this.battleRoles = new ArrayList<>(Arrays.asList(PlayerRole.values()));
         this.scores = new ArrayList<>();
+        this.isMatch  = false;
 
         setLayout(null);
 
@@ -58,12 +69,12 @@ public class BattleScreen extends JPanel {
         lblTitle.setBounds(370, 5, 217, 50);
         add(lblTitle);
 
-        textArea = new JTextArea();
-        textArea.setEditable(false);
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        textArea.setFont(new Font("Dialog", Font.PLAIN, 15));
-        JScrollPane jsp = new JScrollPane(textArea);
+        BattleRecordText = new JTextArea();
+        BattleRecordText.setEditable(false);
+        BattleRecordText.setLineWrap(true);
+        BattleRecordText.setWrapStyleWord(true);
+        BattleRecordText.setFont(new Font("Dialog", Font.PLAIN, 15));
+        JScrollPane jsp = new JScrollPane(BattleRecordText);
         jsp.setBounds(75, 195, 730, 180);
         add(jsp);
 
@@ -98,20 +109,20 @@ public class BattleScreen extends JPanel {
         btnBack.setBounds(570, 398, 140, 40);
         add(btnBack);
 
-        JLabel lblTeam = new JLabel(systemTeam.name + ":");
-        lblTeam.setFont(new Font("Dialog", Font.PLAIN, 15));
-        lblTeam.setBounds(65, 50, 770, 30);
-        add(lblTeam);
+        JLabel lblFaceTeam = new JLabel(systemTeam.name + ":");
+        lblFaceTeam.setFont(new Font("Dialog", Font.PLAIN, 15));
+        lblFaceTeam.setBounds(65, 50, 770, 30);
+        add(lblFaceTeam);
 
         lblMt = new JLabel("New label");
         lblMt.setFont(new Font("Dialog", Font.PLAIN, 15));
         lblMt.setBounds(65, 75, 770, 30);
         add(lblMt);
 
-        JLabel lblTeam2 = new JLabel(userTeam.name + ":");
-        lblTeam2.setFont(new Font("Dialog", Font.PLAIN, 15));
-        lblTeam2.setBounds(65, 100, 770, 30);
-        add(lblTeam2);
+        JLabel lblMyTeam = new JLabel(userTeam.name + ":");
+        lblMyTeam.setFont(new Font("Dialog", Font.PLAIN, 15));
+        lblMyTeam.setBounds(65, 100, 770, 30);
+        add(lblMyTeam);
 
         lblOt = new JLabel("New label");
         lblOt.setFont(new Font("Dialog", Font.PLAIN, 15));
@@ -131,11 +142,11 @@ public class BattleScreen extends JPanel {
     }
 
     /**
-     * the process of Fight.
+     * the process of battle.
      */
     public void battle(JButton button, boolean initial) {
         if (initial) {
-            PlayerRole battleRole = battleRoles.get(new Random().nextInt(battleRoles.size()));
+            PlayerRole battleRole = battleRoles.get(RandomUtils.getRandomInt(battleRoles.size()-1));
             battleRoles.remove(battleRole);
 
             systemPlayer = systemTeam.players.stream().filter(item -> item.role == battleRole).findFirst();
@@ -158,16 +169,20 @@ public class BattleScreen extends JPanel {
                         rightAllScore += score[1];
                     }
                     output("At the end of the competition, Team "+userTeam.name+" had a total score of "+formatScore(leftAllScore)+" and Team "+systemTeam.name+" had a total score of "+formatScore(rightAllScore)+".");
-                    BattleResult result = PlayerGameData.matchSettlement(leftAllScore, rightAllScore);
+                    BattleResult result = PlayerGameData.matchSettlement(leftAllScore, rightAllScore, isMatch);
                     if (result.isTeam1Win()) {
                         output("Congratulations on winning this game, you have earned a bonus of " + result.getTeam1MoneyStr() + " and " + result.getTeam1Points() + " points. Keep up the good work!");
                     } else {
-                        output("You lost this game and earned " + result.getTeam1Points() + " points, keep it up and try again next time...");
+                        if(isMatch){
+                            output("You lost this game and earned " + result.getTeam1Points() + " points, keep it up and try again next time...");
+                        }else {
+                            output("You lost this game, keep it up and try again next time...");
+                        }
                     }
                 } else {
                     index++;
                     lblTitle.setText("Round " + index);
-                    PlayerRole battleRole = battleRoles.get(new Random().nextInt(battleRoles.size()));
+                    PlayerRole battleRole = battleRoles.get(RandomUtils.getRandomInt(battleRoles.size()-1));
                     battleRoles.remove(battleRole);
 
                     systemPlayer = systemTeam.players.stream().filter(item -> item.role == battleRole).findFirst();
@@ -183,13 +198,21 @@ public class BattleScreen extends JPanel {
         lblOt.setText((userPlayer.isPresent() ? userPlayer.get().formatBasic() : "-------------------------"));
     }
 
+    /**
+     * Individual athletes compete in abilities
+     *
+     * @param leftPlayer
+     * @param rightPlayer
+     * @return
+     */
     private Double[] battlePlayer(Player leftPlayer, Player rightPlayer) {
         output(leftPlayer.name + " and " + rightPlayer.name + " are competing in strength...");
         double score1 = leftPlayer.calculateScore();
         double score2 = rightPlayer.calculateScore();
 
-        boolean win = score1 == score2 ? ThreadLocalRandom.current().nextBoolean() : score1 > score2;
-        output(BattleGenerator.getGreeting(win));
+        //At the same score, randomly obtain one side as the winning side
+        boolean win = score1 == score2 ? RandomUtils.getRandomBoolean() : score1 > score2;
+        output(BattlePromptUtils.getGreeting(win));
 
         output(leftPlayer.name + " capability score of " + formatScore(score1) + ", "
                 + rightPlayer.name + " capability score of " + formatScore(score2) + ".  "
@@ -198,19 +221,26 @@ public class BattleScreen extends JPanel {
         output("------------------------------------------------------------------");
         double basic = 3.0;
 
+        //Calculate the endurance value to be reduced
         double scoreRatio = score1 / (score1 + score2);
         double endurance1 = basic + scoreRatio * 10;
         double endurance2 = basic + (1 - scoreRatio) * 10;
         if (win) {
             leftPlayer.declineEndurance(endurance2);
-            rightPlayer.declineEndurance(endurance1);
+//            rightPlayer.declineEndurance(endurance1);
         } else {
             leftPlayer.declineEndurance(endurance1);
-            rightPlayer.declineEndurance(endurance2);
+//            rightPlayer.declineEndurance(endurance2);
         }
         return new Double[]{score1, score2};
     }
 
+    /**
+     * Formatting scores for display
+     *
+     * @param score score
+     * @return  score string
+     */
     private String formatScore(double score) {
         return new BigDecimal(score).setScale(2, RoundingMode.FLOOR).toPlainString();
     }
@@ -219,6 +249,6 @@ public class BattleScreen extends JPanel {
      * output message.
      */
     private void output(String mess) {
-        textArea.setText(textArea.getText() + mess + "\r\n");
+        BattleRecordText.setText(BattleRecordText.getText() + mess + "\r\n");
     }
 }
